@@ -7,8 +7,8 @@ export default function Home() {
 		<>
         <Row>
             <Col className="p-4 text-center">
-                <h1>Welcome To Your Worksout Tracker</h1>
-                <p>Create, Update, Delete and View Our Items</p>
+                <h1>Welcome To Your Workouts Tracker</h1>
+                <p>Create, Update, Delete and View Your workouts</p>
                 <Link className="btn btn-primary" to={'/workout-list'}>Check your Workouts</Link>
             </Col>
         </Row>

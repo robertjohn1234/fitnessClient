@@ -4,22 +4,13 @@ import UserContext from '../UserContext';
 
 export default function Logout() {
 
-    const { unsetUser, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
 
+  useEffect(() => {
     localStorage.clear();
+    setUser(null); // Clear the user context
 
-    useEffect(() => {
+  }, [setUser]);
 
-        setUser({
-            id: null,
-            isAdmin: null
-        });
-
-    }, [])
-
-    // Navigate back to login
-    return (
-        <Navigate to='/login' />
-    )
-
+  return <Navigate to='/login' />;
 }

@@ -14,13 +14,13 @@ export default function AppNavbar() {
 	return(
 		<Navbar bg="primary" expand="lg">
 			<Container fluid>
-			    <Navbar.Brand as={Link} to="/">Inventory</Navbar.Brand>
+			    <Navbar.Brand as={Link} to="/">Fitness_Tracker</Navbar.Brand>
 			    <Navbar.Toggle aria-controls="basic-navbar-nav" />
 			    <Navbar.Collapse id="basic-navbar-nav">
 				    <Nav className="ms-auto">
 				        <Nav.Link as={NavLink} to="/" exact="true">Home</Nav.Link>
                         {
-                            user.id
+                            user !== null
                             ?
                             <>
                                 <Nav.Link as={Link} to="/logout">Logout</Nav.Link>

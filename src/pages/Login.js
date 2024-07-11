@@ -11,7 +11,8 @@ export default function Login() {
 	const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const [isActive, setIsActive] = useState(true);
+    const [isActive, setIsActive] = useState(false);
+
     
     function authenticate(e) {
 
@@ -34,16 +35,14 @@ export default function Login() {
         .then(data => {
 
                 console.log(data);
-
                 localStorage.setItem('token', data.access);
-                retrieveUserDetails(data.access);
+                setUser(data.access);
 
                 Swal.fire({
                     title: "Login Successful",
                     icon: "success",
                     text: "Welcome to Inventory!"
-                });
-            
+                })
             
         })
 
@@ -51,25 +50,6 @@ export default function Login() {
         setPassword('');
 
         }
-
-        const retrieveUserDetails = (token) => {
-            
-            fetch('https://fitness-trackerro.onrender.com/users/details', {
-                headers: {
-                    Authorization: `Bearer ${ token }`
-                }
-            })
-            .then(res => res.json())
-            .then(data => {
-
-                setUser({
-                id: data.user._id,
-                isAdmin: data.user.isAdmin
-                });
-
-            })
-
-        };
 
     useEffect(() => {
 
@@ -86,7 +66,9 @@ export default function Login() {
     }, [email, password]);
 
     return (
-	    	
+        user ? 
+        <Navigate to='/' />
+        :
         <Form onSubmit={(e) => authenticate(e)}>
             <h1 className="my-5 text-center">Login</h1>
             <Form.Group controlId="userEmail">
