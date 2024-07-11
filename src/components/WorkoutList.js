@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { Card, Button } from 'react-bootstrap';
 import AddWorkout from './AddWorkout';
 import UpdateWorkout from './UpdateWorkout';
+import DeleteWorkout from './DeleteWorkout'; // Import DeleteWorkout component
 import UserContext from '../UserContext';
 import { Navigate } from 'react-router-dom';
 
@@ -10,6 +11,7 @@ export default function WorkoutList() {
   const [workouts, setWorkouts] = useState([]);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showUpdateModal, setShowUpdateModal] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false); // State for delete modal
   const [currentWorkoutId, setCurrentWorkoutId] = useState(null);
 
   useEffect(() => {
@@ -81,6 +83,35 @@ export default function WorkoutList() {
       });
   };
 
+  const deleteWorkout = (id) => {
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.error('Token not found');
+      return;
+    }
+
+    fetch(`https://fitness-trackerro.onrender.com/workouts/deleteWorkout/${id}`, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Failed to delete workout');
+        }
+        return response.json();
+      })
+      .then(data => {
+        fetchWorkouts(); // Refresh the workouts list
+      })
+      .catch(error => {
+        console.error('Error deleting workout:', error);
+        // Optionally handle error state or display a message to the user
+      });
+  };
+
   const handleShowAddModal = () => setShowAddModal(true);
   const handleCloseAddModal = () => setShowAddModal(false);
 
@@ -92,6 +123,16 @@ export default function WorkoutList() {
   const handleCloseUpdateModal = () => {
     setCurrentWorkoutId(null);
     setShowUpdateModal(false);
+  };
+
+  const handleShowDeleteModal = (id) => {
+    setCurrentWorkoutId(id);
+    setShowDeleteModal(true);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setCurrentWorkoutId(null);
+    setShowDeleteModal(false);
   };
 
   return (
@@ -113,6 +154,7 @@ export default function WorkoutList() {
                   </Card.Text>
                   <Button className="btn btn-primary" onClick={() => handleShowUpdateModal(workout._id)}>Update</Button>
                   <Button className="btn btn-secondary" onClick={() => updateWorkoutStatus(workout._id, 'Completed')}>Mark as Completed</Button>
+                  <Button className="btn btn-danger" onClick={() => handleShowDeleteModal(workout._id)}>Delete</Button>
                 </Card.Body>
               </Card>
             </div>
@@ -120,6 +162,7 @@ export default function WorkoutList() {
         </div>
         <AddWorkout show={showAddModal} handleClose={handleCloseAddModal} onWorkoutAdded={fetchWorkouts} />
         <UpdateWorkout show={showUpdateModal} handleClose={handleCloseUpdateModal} workoutId={currentWorkoutId} onWorkoutUpdated={fetchWorkouts} />
+        <DeleteWorkout show={showDeleteModal} handleClose={handleCloseDeleteModal} workoutId={currentWorkoutId} onWorkoutDeleted={fetchWorkouts} />
       </div>
     )
   );
